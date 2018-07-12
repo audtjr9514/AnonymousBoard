@@ -1,0 +1,131 @@
+<body id="page-top">
+    <!-- Navigation -->
+    
+    <!-- 헤더 -->
+    <header class="masthead d-flex">
+      <div class="container text-center my-auto">
+        <h1 class="mb-1">익명 게시판</h1>
+        <h3 class="mb-5">
+          <em>Anonymous Board</em>
+          <p><em>김명석에 대해 궁금한 걸 물어보세요!</em></p>
+        </h3>
+        <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">글쓰러 렛츠기릿!</a>
+      </div>
+      <div class="overlay"></div>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    </header>
+
+    <!-- 게시판 글 작성 -->
+    <section class="content-section bg-light" id="about">
+      <div class="container text-center">
+        <div class="row">
+          <div class="col-lg-10 mx-auto">
+            <form action='/cont/result' method='post'>
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+              <h2>익명의 작성자 힌트!</h2>
+            <input type='string' name='person'><br>
+              <h2>질문 내용</h2>
+            <input type='text' name='question'><br>
+              <h2>#해쉬 태그#</h2>
+            <input type="text" name="hashtags" placeholder="#해쉬 태그는 ,로 구분해주세요"><br><br>
+            <input type='submit' value='질문 ㄱ' class="btn btn-dark btn-xl js-scroll-trigger">
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 게시판 확인 / 수정 / 삭제 -->
+    <section class="callout">
+      <div class="container text-center">
+        <h2 class="mx-auto mb-5">지금까지의 질문들</h2>
+        <h3 class="mb-5">
+        <% @dbases.each do |x| %>
+        
+        <strong>질문자</strong> : <%=x.person%>  || <strong>질문</strong> : <%=x.question%>
+        <br>
+        <strong>해쉬 태그 : </strong>
+          <% x.hashtags.each do |tag| %>
+            #<%= tag.name %>
+          <% end %>
+      
+        <!-- Button trigger modal -->
+        <button href='/cont/edit/<%=x.id%>' type="btn btn-dark btn-xl js-scroll-trigger" class="btn btn-dark btn-xl js-scroll-trigge" data-toggle="modal" data-target="#myModal<%=x.id%>">
+          수정
+        </button>
+        <a href='/cont/destroy/<%=x.id%>' class="btn btn-dark btn-xl js-scroll-trigger">
+          삭제
+        </a><br>
+        <%x.comments.each do |c| %>
+          <strong>댓글</strong> : <%=c.content%> 
+          <a href='/comments/delete/<%= c.id %>' class="btn btn-dark btn-xl js-scroll-trigger">삭제</a> <br>
+        <%end%>
+        
+        <form action="/cont/index/<%=x.id%>/create" method="post">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+         <input type='textarea' name='comment' placeholder="댓글">
+         <button type="submit" class="btn btn-dark btn-xl js-scroll-trigger">댓글 입력</button>
+        </form>
+        
+        
+        -----------------------------<br>
+          
+        <!-- Modal -->
+        <div class="modal fade" id="myModal<%=x.id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                
+                <form action='/cont/update/<%=x.id%>' method='post'>
+                  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+                <div class="modal-body">
+                    힌트<br>
+                <input type='string' name='person' value='<%=x.person%>'><br>
+                    질문<br>
+                <input type='text' name='question' value='<%=x.question%>'><br>
+                    해쉬태그<br>
+                <input type='text' name='hashtags'><br>
+                <br>
+                </div>
+                
+                <div class="modal-footer">
+                 <input type='submit' value='저장' class="btn btn-primary"></button>
+                </div>
+                
+                </form>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      
+      </h3>
+   </h2>
+  </div>
+ </section>
+ 
+ 
+  <!-- Footer -->
+  <footer class="footer text-center">
+    <div class="container">
+      
+      <p class="text-muted small mb-0">Copyright &copy; LikeLion 6기 김명석</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="assets/jquery.min.js"></script>
+  <script src="assets/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="assets/jquery.easing.js"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="assets/stylish-portfolio.min.js"></script>
+    
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+</body>
